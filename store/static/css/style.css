@@ -1,0 +1,14 @@
+
+body {
+    background-color: #e6ffe6;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 20vw;
+}
+
+#nav-link,li {
+    list-style-type: none;
+    padding-right: 10px;
+}

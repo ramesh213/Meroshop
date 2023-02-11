@@ -1,0 +1,33 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row mx-auto">
+            <div class="col-lg-12">
+                <label for="fullname" class="col-sm-6 form-label">Full Name</label>
+            <div class="col-lg-8">
+              <input type="text" class="form-control" id="fullname">
+            </div>
+            <label for="exampleFormControlInput1" class=" col-sm-6 form-label">Email address</label>
+            <div class="col-lg-8">
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+            </div>
+            <label for="mobile" class="col-sm-6 form-label">Mobile No.</label>
+            <div class="col-lg-8">
+              <input type="number" class="form-control" id="mobile">
+            </div>
+            <label for="inputPassword" class="col-sm-6 form-label">Password</label>
+            <div class="col-lg-8">
+              <input type="password" class="form-control" id="inputPassword">
+            </div>
+               <label for="cpassword" class="col-sm-6 form-label"> Confirm Password</label>
+            <div class="col-lg-8">
+              <input type="password" class="form-control" id="cpassword">
+            </div>
+            </div>
+    </div>
+</div>
+
+{% endblock %}
