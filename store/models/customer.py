@@ -5,4 +5,7 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=100)
     mobile = models.IntegerField()
     email = models.EmailField()
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=300)
+
+    def register(self):
+        self.save()
