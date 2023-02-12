@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.contrib.auth.hashers import make_password, check_password
 from django.http import HttpResponse
 from django.views import View
 from .models.product import Product
@@ -28,15 +29,21 @@ def register(request):
         last_name = postData.get('lastname')
         mobile = postData.get('mobile')
         email = postData.get('email')
-        password = postData.get('password')
-
-        #validation 
+        password = make_password(postData.get('password')) # make_password hashes the password
+        
+        #holdin value to stay in form incase user mises some fields and refill form
         value = {
             'first_name': first_name,
             'last_name': last_name,
             'mobile' : mobile,
             'email': email
             }
+        # saving the custom form data using named parameter
+        customer = Customer(first_name=first_name,
+                        last_name = last_name,
+                        mobile = mobile, email= email, 
+                        password = password)
+        #validation 
         error_message = None
         if (not first_name):
             error_message = "First name is required !"
@@ -44,17 +51,14 @@ def register(request):
             error_message = " First name length must be greater than four characters long ."
         elif len(mobile) < 10:
             error_message = " Mobile numbers must be 10 digits long"
+        elif customer.is_Exists():
+            error_message = "Email address already exists ! Try with new email !!"
 
         if (not error_message):
-        # saving the custom form data using named parameter
-            customer = Customer(first_name=first_name,
-                        last_name = last_name,
-                        mobile = mobile, email= email, 
-                        password = password)
             customer.register()
-        
-
-        return render(request, 'register.html',{'error':error_message, 'value':value})
+            return redirect('index')
+        else:
+            return render(request, 'register.html',{'error':error_message, 'value':value})
 
 
 
