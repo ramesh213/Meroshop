@@ -56,11 +56,29 @@ def register(request):
 
         if (not error_message):
             customer.register()
-            return redirect('index')
+            return redirect('indexpage')
         else:
             return render(request, 'register.html',{'error':error_message, 'value':value})
 
+def login(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    else:
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        customer = Customer.get_customer_by_email(email)
+        error_message = None
+        if customer:
+            flag = check_password(password, customer.password)
+            if flag:
+                return redirect('indexpage')
+            else:
+                error_message = " Email or Password invalid, Please check and try again !"
 
+        else:
+            error_message = " Email or Password invalid, Please check and try again !"
+
+        return render(request, 'login.html',{'error':error_message })
 
     
 
