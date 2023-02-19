@@ -7,17 +7,46 @@ from .models.category import Category
 from .models.customer import Customer
 
 # Create your views here.
-def index(request):
-    products = None
-    categories = Category.collect_categories()
-    category_id = request.GET.get('category')
-    if category_id:
-        products = Product.get_all_products_by_categoris_id(category_id)
-    else:
-           products = Product.get_all_products()
- 
-    return render(request, 'index.html', {'products': products, 'categories':categories})
+class Index(View):
+    # accessing product id user sends from clicking "add to cart" button ane managing cart
+    def post(self, request):
+        product = request.POST.get('product')
+        remove = request.POST.get('remove')
+        cart = request.session.get('cart')
+        if cart:
+            quantity = cart.get(product)
+            if quantity:
+                if remove:
+                    if quantity <= 1:
+                        cart.pop(product)
+                    else:
+                        cart[product] = quantity - 1
+                else:
+                    cart[product] = quantity + 1
+            else:
+                cart[product] = 1
+        else:
+            cart = {}
+            cart[product] = 1
+        request.session['cart'] = cart
+        # print('cart',request.session['cart'])
+        return redirect('indexpage')
 
+    def get(self, request):
+        cart = request.session.get('cart')
+        if not cart:                    
+            request.session['cart'] = {} # if nothing is in cart, assign empty dictionary. revomes variable doen't exist error
+        products = None
+        categories = Category.collect_categories()
+        category_id = request.GET.get('category')
+        if category_id:
+            products = Product.get_all_products_by_categoris_id(category_id)
+        else:
+            products = Product.get_all_products()
+            # print(request.session.get('customer_email'))
+    
+        return render(request, 'index.html', {'products': products, 'categories':categories})
+    
 
 def register(request):
     if request.method == 'GET':
@@ -71,6 +100,8 @@ def login(request):
         if customer:
             flag = check_password(password, customer.password)
             if flag:
+                # saving user id and email in server through session
+                request.session['customer'] = customer.id
                 return redirect('indexpage')
             else:
                 error_message = " Email or Password invalid, Please check and try again !"
@@ -80,6 +111,15 @@ def login(request):
 
         return render(request, 'login.html',{'error':error_message })
 
+def logout(request):
+    request.session.clear()
+    return redirect('login')
+
+class Cart(View):
+    def get(self,request):
+        id_list = list(request.session.get('cart').keys())
+        products = Product.get_products_by_id(id_list)
+        return render(request, 'cart.html', {'products': products})
     
 
     
