@@ -1,7 +1,54 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% load cart %}
 
-<h1>Orders</h1>
+{% block content %}
+<div class="container">
+ <div class="border rounded p-2 m-2">
+    
+    <div class="table-responsive">
+        <table class="table table-primary text-center">
+            <h3 class=" alert alert-success text-center mb-4 pt-4">Your Orders Are: </h3>
+            <thead>
+                <tr>
+                    <th scope="col">SN.</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Product Image</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Order Date</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+               {% for order in orders %}
+               <tr class="">
+                <td scope="row">{{ forloop.counter }}</td>
+                <td>{{order.product.name}}</td>
+                <td><img style="height: 80px;" class="rounded-circle" src="{{order.product.image.url}}" alt=""></td>
+                <td>{{order.product.description}}</td>
+                <td>Rs.{{order.price}}</td>
+                <td>{{order.quantity}}</td> 
+                <td>Rs.{{order.quantity|multiply:order.price}}</td>
+                {% if order.status %}
+                <td><small class="badge bg-primary">Completed</small></td>
+                {% else %}
+                <td><small class="badge bg-warning">Pending</small></td>
+                {% endif %}
+                <td>{{order.date}}</td> 
+
+                </tr>
+               {% endfor %}
+            </tbody>
+            
+        </table>
+    </div>
+</div>
+
 
 {% endblock %}
+   

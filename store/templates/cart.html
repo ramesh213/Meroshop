@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load cart %}
+
 {% block content %}
 <div class="container">
  <div class="border rounded p-4 m-4">
@@ -28,11 +29,9 @@
                 <td><img style="height: 80px;" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
                 <td>{{product.description}}</td>
                 <td>Rs.{{product.price}}</td>
-                <td>{{product|cart_quantity:request.session.cart}}</td>
+                <td>{{product|cart_quantity:request.session.cart}}</td> 
                 <td>Rs.{{product|total_price:request.session.cart}}</td>
-
-
-            </tr>
+                </tr>
                {% endfor %}
             </tbody>
             <tfoot>
@@ -44,10 +43,37 @@
             </tfoot>
         </table>
         <div class=" float-end">
-            <a href="#" class= "btn btn-primary border rounded btn-lg ">Check Out</a>
+            <a href="/myorder" class= "btn btn-primary border rounded btn-lg" data-bs-toggle="modal" data-bs-target="#exampleModal" >Place Order!</a>
         </div>
     </div>
-    
+</div>
 
- </div>
+<!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Check Out Form</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="p-2 m-2">
+            <form action="/checkout" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="" class="form-label">Address</label>
+                    <input type="text" name="address" id="" class="form-control" aria-describedby="helpId" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="" class="form-label">Mobile</label>
+                    <input type="text" name="mobile" id="" class="form-control" aria-describedby="helpId" required>
+                  </div>
+                  <input type="submit" value="Checkout" class="btn btn-info col-lg-6 float-end">
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

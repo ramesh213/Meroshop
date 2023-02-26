@@ -5,6 +5,7 @@ from django.views import View
 from .models.product import Product
 from .models.category import Category
 from .models.customer import Customer
+from store .models.orders import Order
 
 # Create your views here.
 class Index(View):
@@ -107,7 +108,7 @@ def login(request):
                 error_message = " Email or Password invalid, Please check and try again !"
 
         else:
-            error_message = " Email or Password invalid, Please check and try again !"
+            error_message = " Sorry you are not registered yet...Please register first then login !"
 
         return render(request, 'login.html',{'error':error_message })
 
@@ -120,6 +121,34 @@ class Cart(View):
         id_list = list(request.session.get('cart').keys())
         products = Product.get_products_by_id(id_list)
         return render(request, 'cart.html', {'products': products})
+
+
+class CheckOut(View):
+    def post(self,request):
+        address = request.POST.get('address')
+        mobile = request.POST.get('mobile')
+        customer_id = request.session.get('customer')
+        cart = request.session.get('cart')
+        products = Product.get_products_by_id(list(cart.keys()))
+        # print(address,mobile, customer_id, cart, products)
+        for product in products:
+            order = Order(customer = Customer(id = customer_id),
+                          address = address, 
+                          mobile = mobile,
+                          product = product,
+                          price = product.price,
+                          quantity = cart.get(str(product.id)))
+            order.save_Order()
+        request.session['cart'] = {}
+        return redirect('cart')
+    
+class MyOrder(View):
+    def get(self,request):
+        customer = request.session.get('customer')
+        orders = Order.get_customer_order(customer)
+        return render(request, 'orders.html',{'orders': orders})
+
+        
     
 
     

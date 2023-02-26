@@ -25,5 +25,6 @@ class Product(models.Model):
         else:
             Product.get_all_products()
 
-
+    def __str__(self):
+        return self.name
 
